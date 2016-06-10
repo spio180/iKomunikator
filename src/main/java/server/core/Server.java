@@ -15,8 +15,11 @@ import java.util.concurrent.*;
 public class Server {
     private static Server mServer;
     private ServerConfig mServerConfig;
+    private ServerSocket mServerSocket;
+    private final ExecutorService mConnectionPool = Executors.newCachedThreadPool();
     private ArrayList<Connection> mConnectionList = new ArrayList<Connection>();
     private LinkedList<Message> mMessageList = new LinkedList<Message>();
+    private boolean mRunning = true;
 
     private Server() throws ConfigurationException {
         init();
@@ -30,7 +33,7 @@ public class Server {
         return mServer;
     }
 
-    public void init() throws ConfigurationException {
+    private void init() throws ConfigurationException {
         System.out.println("Starting TCP Server ");
         mServer = this;
 
@@ -40,49 +43,55 @@ public class Server {
                 .load();
     }
 
-    public void startServer() {
-        final ExecutorService connectionPool = Executors.newCachedThreadPool();
+    public void stopServer() {
+        mRunning = false;
+    }
+
+    private void startServer() {
 
         Runnable serverTask = new Runnable() {
 
             public void run() {
-                ServerSocket serverSocket = null;
+                mServerSocket = null;
                 try {
-                    serverSocket = new ServerSocket(mServerConfig.getPortNumber());
+                    mServerSocket = new ServerSocket(mServerConfig.getPortNumber());
                     System.out.println("Waiting for clients to connect");
 
-                    while (true) {
-                        Socket newConnection = serverSocket.accept();
-                        connectionPool.submit(new Connection(mServer, newConnection));
+                    while (mRunning) {
+                        Socket newConnection = mServerSocket.accept();
+                        mConnectionPool.submit(new Connection(mServer, newConnection));
                     }
 
                 } catch (IOException e) {
                     System.out.println("Unable to process client request");
                     e.printStackTrace();
                     System.exit(2);
+                } finally {
+                    terminateServer();
                 }
-
-                try {
-                    connectionPool.shutdown();
-                    connectionPool.awaitTermination(1, TimeUnit.DAYS);
-                    System.out.println("Connections closed successfully");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                try {
-                    serverSocket.close();
-                    System.out.println("Server closed");
-                } catch (IOException e) {
-                    System.out.println("Server socket could not be closed");
-                    e.printStackTrace();
-                    System.exit(2);
-                }
-
             }
         };
         Thread serverThread = new Thread(serverTask);
         serverThread.start();
+    }
+
+    private void terminateServer() {
+        try {
+            mConnectionPool.shutdown();
+            mConnectionPool.awaitTermination(1, TimeUnit.DAYS);
+            System.out.println("Connections closed successfully");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            mServerSocket.close();
+            System.out.println("Server closed");
+        } catch (IOException e) {
+            System.out.println("Server socket could not be closed");
+            e.printStackTrace();
+            System.exit(2);
+        }
     }
 
 
@@ -98,9 +107,9 @@ public class Server {
         mConnectionList.add(newConnection);
     }
 
-    public Connection getConnection(Integer id) {
-        return mConnectionList.get(id);
-    }
+//    public Connection getConnection(Integer id) {
+//        return mConnectionList.get(id);
+//    }
 
     public void pushMessage(Message msg) {
         mMessageList.add(msg);
