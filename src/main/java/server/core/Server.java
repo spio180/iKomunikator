@@ -1,16 +1,16 @@
 package server.core;
 
-import common.ServerConfig;
 import common.ConfigurationLoader;
-import common.Message;
+import common.ServerConfig;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Server {
     private static Server mServer;
@@ -18,7 +18,9 @@ public class Server {
     private ServerSocket mServerSocket;
     private final ExecutorService mConnectionPool = Executors.newCachedThreadPool();
     private ArrayList<Connection> mConnectionList = new ArrayList<Connection>();
-    private LinkedList<Message> mMessageList = new LinkedList<Message>();
+    private MessageList mMessagesToSent = new MessageList();
+    private UserList mUserList = new UserList();
+
     private boolean mRunning = true;
 
     private Server() throws ConfigurationException {
@@ -94,6 +96,15 @@ public class Server {
         }
     }
 
+    public void addConnection(Connection newConnection) {
+        mConnectionList.add(newConnection);
+    }
+
+    /**
+     *
+     * getters and setters
+     *
+     */
 
     public ServerConfig getServerConfig() {
         return mServerConfig;
@@ -103,19 +114,11 @@ public class Server {
         return mConnectionList;
     }
 
-    public void addConnection(Connection newConnection) {
-        mConnectionList.add(newConnection);
+    public MessageList getMessagesToSent() {
+        return mMessagesToSent;
     }
 
-//    public Connection getConnection(Integer id) {
-//        return mConnectionList.get(id);
-//    }
-
-    public void pushMessage(Message msg) {
-        mMessageList.add(msg);
-    }
-
-    public Message popMessage() {
-        return mMessageList.getFirst();
+    public UserList getUserList() {
+        return mUserList;
     }
 }
