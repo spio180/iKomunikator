@@ -23,9 +23,9 @@ public class Receiver {
         BufferedReader bufferReader = new BufferedReader(new InputStreamReader(mConnectionSocket.getInputStream()));
         if (bufferReader.ready()) {
             message = bufferReader.readLine();
-            System.out.println("Received RAW data: " + message);
+            //System.out.println("Received RAW data: " + message);
             msg = Serialization.DeSerializeMessage(message);
-            System.out.println("Deserialized message: " + msg.toString());
+            System.out.println("Receiverd:" + msg.toString());
         }
         return msg;
     }
