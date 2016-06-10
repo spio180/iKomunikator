@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 public class Message implements Serializable {
     private static final long serialVersionUID = 3053534860334056800L;
+    private final Long messageId = System.currentTimeMillis();
     private String type;
     private String sender;
     private String receiver;
@@ -47,9 +48,7 @@ public class Message implements Serializable {
         return serialVersionUID;
     }
 
-    public Message() {
-
-    }
+    public Message() { }
 
     public Message(String type, String sender, String receiver, HashMap<String, String> messagebody) {
         this.type = type;
@@ -66,5 +65,9 @@ public class Message implements Serializable {
                 ", receiver='" + receiver + '\'' +
                 ", messageBody=" + messageBody.toString() +
                 '}';
+    }
+
+    public Long getMessageId() {
+        return messageId;
     }
 }
