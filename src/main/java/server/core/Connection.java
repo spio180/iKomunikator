@@ -6,31 +6,38 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class Connection implements Runnable {
+    private final Integer mConnectionId;
     private final Server mServer;
     private final Socket mClientSocket;
-    private final Receiver mReader;
-    private final Transmitter mSender;
+    private final Receiver mListener;
+    private final Transmitter mTransmitter;
 
 
     public Connection(Server server, Socket clientSocket) {
         mServer = server;
         mClientSocket = clientSocket;
-        mReader = new Receiver(this, mClientSocket);
-        mSender = new Transmitter(this, mClientSocket);
+        mConnectionId = mClientSocket.getPort();
+        mListener = new Receiver(this, mClientSocket);
+        mTransmitter = new Transmitter(this, mClientSocket);
 
     }
 
     public void run() {
         mServer.addConnection(this);
-        System.out.println("New Client Connected: " + mServer.getConnectionList().size());
+        System.out.print("New Client Connected: " + mServer.getConnectionList().size());
         Message message = null;
         while (true) {
             try {
                 Thread.sleep(10L);
-                message = mReader.read();
+                message = mListener.read();
                 if (message != null) {
-
-                    mSender.sendToAll("Nowy uzytkownik: " + message.toString());
+                    if(mServer.getUserList().userIsConnected(message.getSender()) == false){
+                        User newUser = new User(message.getSender(), mConnectionId, Status.ONLINE);
+                        mServer.getUserList().addUser(newUser);
+                    } else {
+                        //TODO: Ping if user is still active.
+                    }
+                    new RouteMessage(message);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
