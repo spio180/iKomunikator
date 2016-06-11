@@ -5,12 +5,12 @@ package server.core;
  */
 public class User {
     private String mNick;
-    private Integer mConnectionId;
+    private Connection mConnection;
     private String mStatus;
 
-    public User(String nick, Integer connectionId, String status) {
+    public User(String nick, Connection connection, String status) {
         mNick = nick;
-        mConnectionId = connectionId;
+        mConnection = connection;
         mStatus = status;
     }
 
@@ -18,8 +18,8 @@ public class User {
         return mNick;
     }
 
-    public Integer getConnectionId() {
-        return mConnectionId;
+    public Connection getConnection() {
+        return mConnection;
     }
 
     public String getStatus() {
