@@ -1,25 +1,18 @@
-package configurator.swing.core;
+package iKomunikator_server;
 
-import org.w3c.dom.Document;
+import java.io.File;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
+import org.w3c.dom.Document;
 
 public class XmlReader {
 	
-	private static String configFilePath;
 	private String port;
 	private String ip;
 	private String limit;
+	private static String configFilePath;
 
-	public static String getConfigFilePath() {
-		return configFilePath;
-	}
-
-	public static void setConfigFilePath(String configFilePath) {
-		XmlReader.configFilePath = configFilePath;
-	}
 
 	public String getPort() {
 		return port;
@@ -44,7 +37,16 @@ public class XmlReader {
 	public void setLimit(String limit) {
 		this.limit = limit;
 	}
+
+	public static String getConfigFilePath() {
+		return configFilePath;
+	}
+
+	public static void setConfigFilePath(String configFilePath) {
+		XmlReader.configFilePath = configFilePath;
+	}
 	
+
 	public void deserializeConfigFromFile(String path) {
 		if (path != null) {
 			configFilePath = path;
