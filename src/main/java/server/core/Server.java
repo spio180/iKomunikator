@@ -16,8 +16,9 @@ public class Server {
     private static Server mServer;
     private ServerConfig mServerConfig;
     private ServerSocket mServerSocket;
-    private final ExecutorService mConnectionPool = Executors.newCachedThreadPool();
-    private ArrayList<Connection> mConnectionList = new ArrayList<Connection>();
+    private ExecutorService mConnectionPool;
+    private ArrayList<Connection> mConnectionList;
+    private UserList mUserList;
 
     private boolean mRunning = true;
 
@@ -36,6 +37,10 @@ public class Server {
     private void init() throws ConfigurationException {
         System.out.println("Starting TCP Server ");
         mServer = this;
+        mConnectionPool = Executors.newCachedThreadPool();
+        mConnectionList = new ArrayList<Connection>();
+        mUserList= new UserList();
+
         //Load ServerConfig from xml file
         mServerConfig = ConfigurationLoader.getInstance()
                 .filePath(ServerConfig.FILE_PATH)
@@ -110,4 +115,23 @@ public class Server {
     public ArrayList<Connection> getConnectionList() {
         return mConnectionList;
     }
+
+    public User getUser(String nick) {
+        return mUserList.getUser(nick);
+    }
+
+    public void addUser(User user) {
+        mUserList.addUser(user);
+    }
+
+    public void removeUser(User user) {
+        mUserList.removeUser(user);
+    }
+
+    public Boolean userIsConnected(String nick) {
+        return mUserList.userIsConnected(nick);
+    }
+
+
+
 }

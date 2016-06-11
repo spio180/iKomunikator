@@ -13,7 +13,6 @@ public class Connection implements Runnable {
     private final Socket mClientSocket;
     private final Receiver mListener;
     private final Transmitter mTransmitter;
-    private UserList mUserList;
 
 
     public Connection(Server server, Socket clientSocket) {
@@ -22,8 +21,6 @@ public class Connection implements Runnable {
         mConnectionId = mClientSocket.getPort();
         mListener = new Receiver(this);
         mTransmitter = new Transmitter(this);
-        mUserList = mServer.getRouter().getUserList();
-
     }
 
     public void run() {
@@ -35,9 +32,9 @@ public class Connection implements Runnable {
                 Thread.sleep(10L);
                 message = mListener.read();
                 if (message != null) {
-                    if (mUserList.userIsConnected(message.getSender()) == false) {
+                    if (mServer.userIsConnected(message.getSender()) == false) {
                         User newUser = new User(message.getSender(), this, Status.ONLINE);
-                        mUserList.addUser(newUser);
+                        mServer.addUser(newUser);
                     } else {
                         //TODO: Ping if user is still active.
                     }
