@@ -1,33 +1,26 @@
 package client.core;
 
+import javafx.collections.FXCollections;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import javafx.collections.FXCollections;
-
 public class TcpClient {
 
+	public List<String> listOfCom = new ArrayList<String>();
+	public ChatWindowController chatController = null;
 	private InetAddress connectedAddress;
 	private int connectedPort = 0;
 	private Socket tcpSocket = null;
 	private BufferedReader inBuff;
 	private PrintWriter outPrint;
-
 	private Thread listennigThread;
 	private volatile boolean running = true;
-
-	public List<String> listOfCom = new ArrayList<String>();
-	public ChatWindowController chatController = null;
 
 	public TcpClient() {
 
@@ -99,7 +92,7 @@ public class TcpClient {
 		}
 	}
 
-	public void terminateListenningThread() {
+	public void terminateListeningThread() {
 		running = false;
 	}
 
