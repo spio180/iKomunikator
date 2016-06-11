@@ -4,70 +4,74 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 public class Message implements Serializable {
-    private static final long serialVersionUID = 3053534860334056800L;
-    private final Long messageId = System.currentTimeMillis();
-    private String type;
-    private String sender;
-    private String receiver;
-    private HashMap<String, String> messageBody = new HashMap<String, String>();
-
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getSender() {
-        return sender;
-    }
-
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
-
-    public String getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
-    }
-
-    public HashMap<String, String> getMessageBody() {
-        return messageBody;
-    }
-
-    public void setMessageBody(HashMap<String, String> messageBody) {
-        this.messageBody = messageBody;
-    }
-
-    public static long getSerialversionuid() {
-        return serialVersionUID;
-    }
+    private final Long mMessageId = System.currentTimeMillis();
+    private String mType;
+    private String mSender;
+    private String mReceiver;
+    private HashMap<String, String> mMessageBody = new HashMap<String, String>();
 
     public Message() { }
 
     public Message(String type, String sender, String receiver, HashMap<String, String> messagebody) {
-        this.type = type;
-        this.sender = sender;
-        this.receiver = receiver;
-        this.messageBody = messagebody;
+        mType = type;
+        mSender = sender;
+        mReceiver = receiver;
+        mMessageBody = messagebody;
+    }
+
+    /**
+     *
+     * getters and setters
+     *
+     */
+
+    public String getType() {
+        return mType;
+    }
+
+    public void setType(String type) {
+        this.mType = type;
+    }
+
+    public String getSender() {
+        return mSender;
+    }
+
+    public void setSender(String sender) {
+        this.mSender = sender;
+    }
+
+    public String getReceiver() {
+        return mReceiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.mReceiver = receiver;
+    }
+
+    public HashMap<String, String> getMessageBody() {
+        return mMessageBody;
+    }
+
+    public void setMessageBody(HashMap<String, String> messageBody) {
+        this.mMessageBody = messageBody;
+    }
+
+    public void addLineToMessageBody(String key, String value) {
+        this.mMessageBody.put(key,value);
+    }
+
+    public Long getMessageId() {
+        return mMessageId;
     }
 
     @Override
     public String toString() {
         return "Message{" +
-                "type='" + type + '\'' +
-                ", sender='" + sender + '\'' +
-                ", receiver='" + receiver + '\'' +
-                ", messageBody=" + messageBody.toString() +
+                "mType='" + mType + '\'' +
+                ", mSender='" + mSender + '\'' +
+                ", mReceiver='" + mReceiver + '\'' +
+                ", mMessageBody=" + mMessageBody.toString() +
                 '}';
-    }
-
-    public Long getMessageId() {
-        return messageId;
     }
 }
