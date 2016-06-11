@@ -18,7 +18,7 @@ public class Server {
     private ServerSocket mServerSocket;
     private final ExecutorService mConnectionPool = Executors.newCachedThreadPool();
     private ArrayList<Connection> mConnectionList = new ArrayList<Connection>();
-    private Router mRouter;
+
     private boolean mRunning = true;
 
     private Server() throws ConfigurationException {
@@ -36,7 +36,6 @@ public class Server {
     private void init() throws ConfigurationException {
         System.out.println("Starting TCP Server ");
         mServer = this;
-        mRouter = new Router(mServer);
         //Load ServerConfig from xml file
         mServerConfig = ConfigurationLoader.getInstance()
                 .filePath(ServerConfig.FILE_PATH)
@@ -110,13 +109,5 @@ public class Server {
 
     public ArrayList<Connection> getConnectionList() {
         return mConnectionList;
-    }
-
-    public Router getRouter() {
-        return mRouter;
-    }
-
-    public void setRouter(Router router) {
-        mRouter = router;
     }
 }
