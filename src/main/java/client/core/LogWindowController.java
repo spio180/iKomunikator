@@ -1,32 +1,32 @@
 package client.core;
 
-import java.io.IOException;
-
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+
+import java.io.IOException;
 
 public class LogWindowController {
-	@FXML private Button butCancel;
-	@FXML private Button butConnect;
-	@FXML private TextField textClientIP;
 	@FXML TextField userLogin;
 	@FXML Pane tcpClientPort;
 	@FXML TextField textClientPort;
+	@FXML private Button butCancel;
+	@FXML private Button butConnect;
+	@FXML private TextField textClientIP;
 	private TcpClient connectionToServer = null;
 
 	@FXML private void closeButtonAction(){
 
 		/* Closing connection */
 		if (connectionToServer != null) {
-			connectionToServer.terminateListenningThread();
+			connectionToServer.terminateListeningThread();
 			connectionToServer.closeSocket();
 			System.out.println("Connection to server closed");
 		}
@@ -74,7 +74,7 @@ public class LogWindowController {
 
 			try {
 
-				chatWindow = (BorderPane) loader.load();
+				chatWindow = loader.load();
 				Stage stageChat = new Stage();
 		        stageChat.setTitle("iKomunikator");
 		        stageChat.setScene(new Scene(chatWindow, 480, 820));
@@ -84,7 +84,7 @@ public class LogWindowController {
 		            public void handle(WindowEvent we) {
 		                System.out.println("Stage is closing");
 		                if (connectionToServer != null) {
-		        			connectionToServer.terminateListenningThread();
+		        			connectionToServer.terminateListeningThread();
 		        			connectionToServer.closeSocket();
 		        			System.out.println("Connection to server closed");
 		        		}
@@ -100,7 +100,7 @@ public class LogWindowController {
 			}
 
 			//setting TCP connection for ChatWindow
-			ChatWindowController chatController = (ChatWindowController) loader.getController();
+			ChatWindowController chatController = loader.getController();
 			chatController.setTcpConnectionToServer(connectionToServer);
 			connectionToServer.setChatController(chatController);
 
