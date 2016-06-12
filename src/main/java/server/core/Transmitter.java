@@ -8,7 +8,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Transmitter {
     private Server mServer;
@@ -28,15 +27,19 @@ public class Transmitter {
         String type = Const.MSG_DO_WSZYSTKICH;
         String sender = Const.USER_SERVER;
         String receiver = Const.USER_ALL;
-
-        HashMap<String,String> bodyMsg = new HashMap<String,String>();
-        bodyMsg.put(Const.BODY,"Zalogowanio użytkownika: " + message.getReceiver());
-
-        Message notify = new Message(type,sender,receiver,bodyMsg);
-        sendToAll(notify);
     }
 
     public void sendToAll(Message message) throws IOException {
+        ArrayList<Connection> connectionList = mConnection.getServer().getConnectionList();
+        DataOutputStream outToClient = null;
+        for (Connection connection : connectionList) {
+            System.out.println("Sent: " + message + " to Socket: " + connection.getClientSocket().getRemoteSocketAddress());
+            outToClient = new DataOutputStream(connection.getClientSocket().getOutputStream());
+            outToClient.writeBytes(Serialization.SerializeMessage(message));
+        }
+    }
+
+    public void sendToAllOthers(Message message) throws IOException {
         ArrayList<Connection> connectionList = mConnection.getServer().getConnectionList();
         DataOutputStream outToClient = null;
         for (Connection connection : connectionList) {
@@ -47,6 +50,7 @@ public class Transmitter {
             }
         }
     }
+
     public void sendTo(String receiver, Message message) throws IOException {
         ArrayList<Connection> connectionList = mConnection.getServer().getConnectionList();
         DataOutputStream outToClient = null;

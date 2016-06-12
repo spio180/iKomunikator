@@ -43,7 +43,7 @@ public class Connection implements Runnable {
                         mTransmitter.sendBack(response);
 
                         HashMap<String,String> bodyMsg = new HashMap<String,String>();
-                        bodyMsg.put(Const.BODY,"Zalogowanio użytkownika: " + message.getSender());
+                        bodyMsg.put(Const.BODY,"Zalogowano użytkownika: " + message.getSender());
                         Message notify = new Message(Const.MSG_DO_WSZYSTKICH,Const.USER_SERVER,Const.USER_ALL,bodyMsg);
                         mTransmitter.sendToAllOthers(notify);
 

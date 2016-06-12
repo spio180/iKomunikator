@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -101,6 +102,9 @@ public class Server {
     public void addConnection(Connection newConnection) {
         mConnectionList.add(newConnection);
     }
+    public void removeConnection(Connection connectionToRemove) {
+        mConnectionList.remove(connectionToRemove);
+    }
 
     /**
      *
@@ -128,10 +132,17 @@ public class Server {
         mUserList.removeUser(user);
     }
 
+    public void removeUser(Connection connection) {
+        mUserList.removeUser(connection);
+    }
+
     public Boolean userIsConnected(String nick) {
         return mUserList.userIsConnected(nick);
     }
 
 
+    public Set<String> getUsers() {
+        return mUserList.getKeys();
+    }
 
 }
