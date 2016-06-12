@@ -1,7 +1,9 @@
 package iKomunikator_server;
 
+
 import java.io.File;
 
+import javax.swing.DefaultListModel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
@@ -11,6 +13,7 @@ public class XmlReader {
 	private String port;
 	private String ip;
 	private String limit;
+	private DefaultListModel<String> fWords = new DefaultListModel<String>();
 	private static String configFilePath;
 
 
@@ -37,6 +40,10 @@ public class XmlReader {
 	public void setLimit(String limit) {
 		this.limit = limit;
 	}
+	
+	public DefaultListModel<String> getfWords() {
+		return fWords;
+	}
 
 	public static String getConfigFilePath() {
 		return configFilePath;
@@ -45,6 +52,7 @@ public class XmlReader {
 	public static void setConfigFilePath(String configFilePath) {
 		XmlReader.configFilePath = configFilePath;
 	}
+	
 	
 
 	public void deserializeConfigFromFile(String path) {
@@ -61,9 +69,13 @@ public class XmlReader {
 			ip = document.getElementsByTagName("IP").item(0).getTextContent();
 			port = document.getElementsByTagName("ServerPort").item(0).getTextContent();
 			limit = document.getElementsByTagName("ConnectionsLimit").item(0).getTextContent();
+			for (int i = 0; i < 10; i++) {
+					fWords.addElement(document.getElementsByTagName("fWords" + i).item(0).getTextContent());
+			}
+			
 		} catch (Exception e) {
-			System.out.printf("Error reading the config file\n");
-			e.printStackTrace();
+//			System.out.printf("Error reading the config file\n");
+//			e.printStackTrace();
 		}
 
 	}

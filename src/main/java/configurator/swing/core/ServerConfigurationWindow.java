@@ -28,9 +28,9 @@ public class ServerConfigurationWindow {
 	private String ip;
 	private String port;
 	private String limit;
-	// private String[] fWords = { "hitler", "litwa" };
-	//private static List<String> listWords = new ArrayList<String>();
-//	private String[] forbiddenWords;
+	private String[] fWordsArray;
+	private DefaultListModel<String> fWords = new DefaultListModel<String>();
+
 
 
 	/**
@@ -59,6 +59,7 @@ public class ServerConfigurationWindow {
 		this.ip = reader.getIp();
 		this.port = reader.getPort();
 		this.limit = reader.getLimit();
+		this.fWords = reader.getfWords();
 
 		initialize();
 	}
@@ -78,7 +79,7 @@ public class ServerConfigurationWindow {
 		String ip = textIp.getText();
 		int port = Integer.parseInt(textPort.getText());
 		int limit = Integer.parseInt(textLimit.getText());
-		XmlWriter writer = new XmlWriter(ip, port, limit);
+		XmlWriter writer = new XmlWriter(ip, port, limit, fWordsArray);
 		try {
 			writer.serializeServerConfig();
 			JOptionPane.showMessageDialog(null, "Konfiguracjê poprawnie zapisano do pliku server.cfg");
@@ -87,6 +88,13 @@ public class ServerConfigurationWindow {
 			if (Main.debug == true) {
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	private void jListToArray(){
+		fWordsArray = new String[fWords.size()];
+		for (int i=0; i < fWords.size(); i++){
+			fWordsArray[i]=fWords.get(i).toString();
 		}
 	}
 
@@ -127,8 +135,7 @@ public class ServerConfigurationWindow {
 		frame.getContentPane().add(textLimit);
 		textLimit.setColumns(10);
 
-		DefaultListModel<String> fWords = new DefaultListModel<String>();
-		fWords.addElement("ktury");
+//		fWords.addElement("ktury");
 
 		JList<String> list = new JList<String>();
 		list.addMouseListener(new MouseAdapter() {
@@ -147,6 +154,7 @@ public class ServerConfigurationWindow {
 			public void actionPerformed(ActionEvent e) {
 				int index = list.getSelectedIndex();
 				fWords.setElementAt(textNewWord.getText(), index);
+				textNewWord.setText("");
 			}
 		});
 		btnZmien.setBounds(346, 538, 89, 23);
@@ -177,6 +185,7 @@ public class ServerConfigurationWindow {
 		JButton btnZapisz = new JButton("Zapisz");
 		btnZapisz.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				jListToArray();
 				validate();
 				saveToXml();
 			}

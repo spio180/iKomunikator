@@ -60,13 +60,14 @@ public class XmlWriter {
 			element.appendChild(connectionLimit);
 			
 			if (forbiddenWords != null) {
-			Element words = document.createElement("fWords");
+//			Element words = document.createElement("fWords");
 			for (int i = 0; i < forbiddenWords.length; i++) {
+				Element words = document.createElement("fWords"+i);
 				words.appendChild(document.createTextNode(forbiddenWords[i]));
-				words.appendChild(document.createTextNode(","));
-
+//				words.appendChild(document.createTextNode(","));
+				element.appendChild(words);
 			}
-			element.appendChild(words);
+
 			}
 
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
