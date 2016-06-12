@@ -35,19 +35,29 @@ public class Connection implements Runnable {
                     if (mServer.userIsConnected(message.getSender()) == false) {
                         User newUser = new User(message.getSender(), this, Status.ONLINE);
                         mServer.addUser(newUser);
-                    } else {
-                        //TODO: Ping if user is still active.
                     }
                     if (Const.MSG_LOGOWANIE.equals(message.getType())) {
                         HashMap<String, String> bodyMessage = new HashMap<String, String>();
-                        bodyMessage.put("response", "Poprawnie zalogowano.");
+                        bodyMessage.put(Const.BODY, "Poprawnie Zalogowany do Serwera.");
                         Message response = new Message(Const.MSG_LOGOWANIE_OK, Const.USER_SERVER, message.getSender(), bodyMessage);
                         mTransmitter.sendBack(response);
+
+                        HashMap<String,String> bodyMsg = new HashMap<String,String>();
+                        bodyMsg.put(Const.BODY,"Zalogowanio użytkownika: " + message.getSender());
+                        Message notify = new Message(Const.MSG_DO_WSZYSTKICH,Const.USER_SERVER,Const.USER_ALL,bodyMsg);
+                        mTransmitter.sendToAllOthers(notify);
+
+                        HashMap<String, String> userListMessage = new HashMap<String, String>();
+                        for(String nick : mServer.getUsers()) {
+                            userListMessage.put(nick,nick);
+                        }
+                        Message userList = new Message(Const.MSG_LISTA_UZ, Const.USER_SERVER, Const.USER_ALL, userListMessage);
+                        mTransmitter.sendToAll(userList);
                     } else if (Const.MSG_DO_WSZYSTKICH.equals(message.getType())) {
                         HashMap<String, String> bodyMessage = new HashMap<String, String>();
                         bodyMessage.put(Const.BODY, message.getMessageBody().get(Const.BODY));
                         Message response = new Message(Const.MSG_DO_WSZYSTKICH, message.getSender(), Const.USER_ALL , bodyMessage);
-                        mTransmitter.sendToAll(response);
+                        mTransmitter.sendToAllOthers(response);
                     } else if (Const.MSG_DO_UZYTKOWNIKA.equals(message.getType())) {
                         HashMap<String, String> bodyMessage = new HashMap<String, String>();
                         bodyMessage.put(Const.BODY, message.getMessageBody().get(Const.BODY));
