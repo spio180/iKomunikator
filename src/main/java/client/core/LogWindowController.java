@@ -16,22 +16,15 @@ import javafx.stage.WindowEvent;
 import java.io.IOException;
 
 public class LogWindowController {
-    @FXML
-    TextField userLogin;
-    @FXML
-    Pane tcpClientPort;
-    @FXML
-    TextField textClientPort;
-    @FXML
-    private Button butCancel;
-    @FXML
-    private Button butConnect;
-    @FXML
-    private TextField textClientIP;
+    @FXML TextField userLogin;
+    @FXML Pane tcpClientPort;
+    @FXML TextField textClientPort;
+    @FXML private Button butCancel;
+    @FXML private Button butConnect;
+    @FXML private TextField textClientIP;
     private TcpClient connectionToServer = null;
 
-    @FXML
-    private void closeButtonAction() {
+    @FXML private void closeButtonAction(){
         if (connectionToServer != null) {
             connectionToServer.terminateListenningThread();
             connectionToServer.closeSocket();
@@ -42,13 +35,11 @@ public class LogWindowController {
         stage.close();
     }
 
-    @FXML
-    private void connectButtonAction() {
+    @FXML private void connectButtonAction() {
         connectionToServer = new TcpClient();
         butConnect.setDisable(true);
 
-		/*connection establishing */
-        int rc = connectionToServer.connectToServer(textClientIP.getText(), Integer.parseInt(textClientPort.getText()));
+        int rc = connectionToServer.connectToServer(textClientIP.getText(),Integer.parseInt(textClientPort.getText()));
 
         if (rc != 0) {
             System.out.println("Cbutton");
@@ -61,13 +52,9 @@ public class LogWindowController {
         loginMessage.setReceiver(Const.USER_SERVER);
         loginMessage.setSender(userLogin.getText());
         loginMessage.addLineToMessageBody(Const.LOGIN, userLogin.getText());
-
         connectionToServer.sendMessage(loginMessage);
 
-		/*verify answear from server */
-
         if (true) {
-            //Starting chat window
             FXMLLoader loader =  new FXMLLoader(getClass().getResource("/client/ChatWindow.fxml"));
             AnchorPane chatWindow;
 
@@ -75,10 +62,11 @@ public class LogWindowController {
                 chatWindow = loader.load();
                 Stage stageChat = new Stage();
                 stageChat.setTitle("iKomunikator");
-                stageChat.setScene(new Scene(chatWindow, 900, 600));
-                //TextField textToSend = (TextField) stageChat.lookup("textToSend");
+                Scene sceneChat = new Scene(chatWindow, 900, 600);
+                stageChat.setScene(sceneChat);
+                //TextField textToSend = (TextField) sceneChat.lookup("textToSend");
                 //textToSend.requestFocus();
-                //Button butWyslij = (Button) chatWindow.lookup("butWyslij");
+                //Button butWyslij = (Button) sceneChat.lookup("butWyslij");
                 //butWyslij.setDefaultButton(true);
                 stageChat.show();
 
