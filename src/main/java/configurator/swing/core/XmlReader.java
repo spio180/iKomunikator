@@ -69,7 +69,8 @@ public class XmlReader {
 			ip = document.getElementsByTagName("IP").item(0).getTextContent();
 			port = document.getElementsByTagName("ServerPort").item(0).getTextContent();
 			limit = document.getElementsByTagName("ConnectionsLimit").item(0).getTextContent();
-			for (int i = 0; i < 10; i++) {
+			//lista s³ów na max 100 elementów, hehe :P
+			for (int i = 0; i < 100; i++) {
 					fWords.addElement(document.getElementsByTagName("fWords" + i).item(0).getTextContent());
 			}
 			
