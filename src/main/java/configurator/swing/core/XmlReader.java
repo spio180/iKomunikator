@@ -1,25 +1,21 @@
-package configurator.swing.core;
+package iKomunikator_server;
 
-import org.w3c.dom.Document;
 
+import java.io.File;
+
+import javax.swing.DefaultListModel;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
+import org.w3c.dom.Document;
 
 public class XmlReader {
 	
-	private static String configFilePath;
 	private String port;
 	private String ip;
 	private String limit;
+	private DefaultListModel<String> fWords = new DefaultListModel<String>();
+	private static String configFilePath;
 
-	public static String getConfigFilePath() {
-		return configFilePath;
-	}
-
-	public static void setConfigFilePath(String configFilePath) {
-		XmlReader.configFilePath = configFilePath;
-	}
 
 	public String getPort() {
 		return port;
@@ -45,6 +41,20 @@ public class XmlReader {
 		this.limit = limit;
 	}
 	
+	public DefaultListModel<String> getfWords() {
+		return fWords;
+	}
+
+	public static String getConfigFilePath() {
+		return configFilePath;
+	}
+
+	public static void setConfigFilePath(String configFilePath) {
+		XmlReader.configFilePath = configFilePath;
+	}
+	
+	
+
 	public void deserializeConfigFromFile(String path) {
 		if (path != null) {
 			configFilePath = path;
@@ -59,9 +69,14 @@ public class XmlReader {
 			ip = document.getElementsByTagName("IP").item(0).getTextContent();
 			port = document.getElementsByTagName("ServerPort").item(0).getTextContent();
 			limit = document.getElementsByTagName("ConnectionsLimit").item(0).getTextContent();
+			//lista s³ów na max 100 elementów, hehe :P
+			for (int i = 0; i < 100; i++) {
+					fWords.addElement(document.getElementsByTagName("fWords" + i).item(0).getTextContent());
+			}
+			
 		} catch (Exception e) {
-			System.out.printf("Error reading the config file\n");
-			e.printStackTrace();
+//			System.out.printf("Error reading the config file\n");
+//			e.printStackTrace();
 		}
 
 	}
