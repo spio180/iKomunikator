@@ -16,12 +16,11 @@ import java.util.ArrayList;
  */
 public class ServerConfig {
 
-    public final static String FILE_PATH = "src/main/resources/server/server.cfg";
-
+    public final static String FILE_PATH = "server.cfg";
+    public ArrayList<String> mForbiddenWords;
     private String mServerIp;
     private int mPortNumber;
     private int mConnectionLimit;
-    public ArrayList<String> mForbiddenWords;
 
     public ServerConfig(String serverIp, int portNumber, int connectionLimit, ArrayList<String> forbiddenWords) {
         mServerIp = serverIp;

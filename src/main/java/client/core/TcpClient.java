@@ -12,206 +12,216 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class TcpClient {
-    public List<String> listOfCom = new ArrayList<String>();
-    public ChatWindowController chatController = null;
-    private InetAddress connectedAddress;
-    private int connectedPort = 0;
-    private Socket tcpSocket = null;
-    private BufferedReader inBuff;
-    private PrintWriter outPrint;
-    private Thread listennigThread;
-    private volatile boolean running = true;
+	public HashMap<String, List<String>> listaListChatow = new HashMap<String, List<String>>();
+	public List<String> listaUzytkownikow = new ArrayList<String>();
+	public ChatWindowController chatController = null;
+	private InetAddress connectedAddress;
+	private int connectedPort = 0;
+	private Socket tcpSocket = null;
+	private BufferedReader inBuff;
+	private PrintWriter outPrint;
+	private Thread listennigThread;
+	private volatile boolean running = true;
+	
+	public TcpClient() {
+		listaListChatow.put("Wszyscy", new ArrayList<String>());
+	}
 
-    public TcpClient() {
+	public static String getCurrentIPAddress() {
+		InetAddress localaddr;
+		try {
+			localaddr = InetAddress.getLocalHost();
+			System.out.println("Local Address : " + localaddr);
+			System.out.println("Local IP: " + localaddr.getHostAddress());
+			System.out.println("Local hostname   : " + localaddr.getHostName());
+			return localaddr.getHostAddress();
 
-    }
+		} catch (UnknownHostException e) {
+			System.out.println("getCurrentIPAddress method - UnknownHostException occured");
+			e.printStackTrace();
+			return "";
+		}
+	}
 
-    public static String getCurrentIPAddress() {
-        InetAddress localaddr;
-        try {
-            localaddr = InetAddress.getLocalHost();
-            System.out.println("Local Address : " + localaddr);
-            System.out.println("Local IP: " + localaddr.getHostAddress());
-            System.out.println("Local hostname   : " + localaddr.getHostName());
-            return localaddr.getHostAddress();
+	public int connectToServer(String host, int port) {
+		try {
+			connectedAddress = Inet4Address.getByName(host);
+			connectedPort = port;
+			this.tcpSocket = new Socket(connectedAddress, connectedPort);
+			this.inBuff = new BufferedReader(new InputStreamReader(tcpSocket.getInputStream()));
+			this.outPrint = new PrintWriter(tcpSocket.getOutputStream());
+			listennigThread = new Thread(new TcpListeningThread());
+			
+			try {
+				listennigThread.join();
+			} catch (InterruptedException e) {
+				System.out.println("Listenning thread could not be joined");
+				e.printStackTrace();
+			}
+			listennigThread.start();
+			running = true;
 
-        } catch (UnknownHostException e) {
-            System.out.println("getCurrentIPAddress method - UnknownHostException occured");
-            e.printStackTrace();
-            return "";
-        }
-    }
+		} catch (SocketException e) {
+			System.out.println("Socket Exception occured");
+			e.printStackTrace();
+			return 1;
+		} catch (UnknownHostException e) {
+			System.out.println("UnknownHostException occured");
+			e.printStackTrace();
+			return 2;
+		} catch (IOException e) {
+			System.out.println("IOException occured");
+			e.printStackTrace();
+			return 3;
+		}
 
-    public int connectToServer(String host, int port) {
-        try {
-            connectedAddress = Inet4Address.getByName(host);
-            connectedPort = port;
-            this.tcpSocket = new Socket(connectedAddress, connectedPort);
-            this.inBuff = new BufferedReader(new InputStreamReader(tcpSocket.getInputStream()));
-            this.outPrint = new PrintWriter(tcpSocket.getOutputStream());
-            listennigThread = new Thread(new TcpListeningThread());
+		return 0;
+	}
 
-            try {
-                listennigThread.join();
-            } catch (InterruptedException e) {
-                System.out.println("Listenning thread could not be joined");
-                e.printStackTrace();
-            }
-            listennigThread.start();
-            running = true;
+	public void sendMessage(Message message) {
+		synchronized (this) {
+			if (!this.tcpSocket.isConnected()) {
+				System.out.println("No connection to server");
+				return;
+			}
+			
+			String serializedMessage = Serialization.SerializeMessage(message);
+			System.out.println(serializedMessage);
+			this.outPrint.println(serializedMessage);
+			this.outPrint.flush();
+		}
+	}
 
-        } catch (SocketException e) {
-            System.out.println("Socket Exception occured");
-            e.printStackTrace();
-            return 1;
-        } catch (UnknownHostException e) {
-            System.out.println("UnknownHostException occured");
-            e.printStackTrace();
-            return 2;
-        } catch (IOException e) {
-            System.out.println("IOException occured");
-            e.printStackTrace();
-            return 3;
-        }
+	public void terminateListenningThread() {
+		running = false;
+	}
 
-        return 0;
-    }
+	public void setChatController(ChatWindowController chat) {
+		chatController = chat;
+		
+		if (chatController != null) {
+			listaListChatow.get("Wszyscy").add("iKomunikator - WITAMY !");
+			chatController.textChat.setItems(FXCollections.observableArrayList(listaListChatow.get("Wszyscy")));		
+		}	
+	}
+	public void closeSocket() {
+		if (tcpSocket != null)
+			try {
+				tcpSocket.close();
+			} catch (IOException e) {
+				System.out.println("TCP socket could not be closed");
+				e.printStackTrace();
+			}
+	}
 
-    public void sendMessage(Message message) {
-        synchronized (this) {
-            if (!this.tcpSocket.isConnected()) {
-                System.out.println("No connection to server");
-                return;
-            }
+	private class TcpListeningThread implements Runnable {
 
-            String serializedMessage = Serialization.SerializeMessage(message);
-            System.out.println(serializedMessage);
-            this.outPrint.println(serializedMessage);
-            this.outPrint.flush();
-        }
-    }
+		public TcpListeningThread() {
+		}
 
-    public void terminateListenningThread() {
-        running = false;
-    }
+		public void run() {			
+			while (!running)
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e1) {
+					System.out.println("Listenning thread could not be started - running not set");
+					e1.printStackTrace();
+				}
+			System.out.println("Listenning thread - Start signal received");
 
-    public void setChatController(ChatWindowController chat) {
-        chatController = chat;
+			while (running) {
+				try {
+					if (inBuff.ready()) {
+						String serializedMessage = inBuff.readLine();
+						System.out.println(serializedMessage);
+						Message message = Serialization.DeSerializeMessage(serializedMessage);
+						
+						if (message.getType().equals(Const.MSG_LOGOWANIE_OK)) {
+							this.LogowanieOK(message);
+						}
+						
+						if (message.getType().equals(Const.MSG_DO_UZYTKOWNIKA)) {
+							this.MessageDoUzytkownika(message);
+						}
+						
+						
+						if (message.getType().equals(Const.MSG_DO_WSZYSTKICH)) {
+							this.MessageDoWszystkich(message);
+						}
+						
+						if (message.getType().equals(Const.MSG_LOGOWANIE_BLAD)) {
+							 Alert alert = new Alert(AlertType.ERROR);
+							 alert.setTitle("B��d");
+							 alert.setContentText("U�ytkownik o tej nazwie ju� istnieje lub przekroczono dozwolon� liczb� u�ytkownik�w.");
+							 alert.showAndWait();
+						}	
+						
+						if (message.getType().equals(Const.MSG_LISTA_UZ)) {
+							this.ListaUzytkownikow(message);
+						}							
+					}
+					
+				} catch (IOException e) {
+					System.err.println("Connection problem");
+				}
+			}
 
-        if (chatController != null) {
-            listOfCom.add("iKomunikator - WITAMY !");
-            chatController.textChat.setItems(FXCollections.observableArrayList(listOfCom));
-        }
-    }
-    public void closeSocket() {
-        if (tcpSocket != null)
-            try {
-                tcpSocket.close();
-            } catch (IOException e) {
-                System.out.println("TCP socket could not be closed");
-                e.printStackTrace();
-            }
-    }
+			System.out.println("Listenning thread stopped");
+		}
+		
+		private void LogowanieOK(Message message) {
+			this.ListaUzytkownikow(message);
+			System.out.println(message.toString());
+			ChatWindowController.loggedUserName=message.getReceiver();
+			String messageText = "Zalogowano na serwerze: " + ChatWindowController.loggedUserName;
+			listaListChatow.get("Wszyscy").add(messageText);		
+			
+			if (chatController != null) {
+				chatController.textChat.setItems(FXCollections.observableArrayList(listaListChatow.get("Wszyscy")));	
+			}			
+		}
+		
+		private void MessageDoUzytkownika(Message message) {
+			if (message.getMessageBody().containsKey(Const.BODY)) {			
+				String messageText = message.getSender().concat(" - ").concat(message.getMessageBody().get(Const.BODY)).replace("\\n", "").replace("\n", "");
 
-    private class TcpListeningThread implements Runnable {
+				System.out.println(messageText);
+				listaListChatow.get(message.getSender()).add(messageText);			
 
-        public TcpListeningThread() {
-        }
+				if (chatController != null) {
+					chatController.textChat.setItems(FXCollections.observableArrayList(listaListChatow.get(message.getSender())));				
+				}
+			}
+		}
+		
+		private void MessageDoWszystkich(Message message) {
+			if (message.getMessageBody().containsKey(Const.BODY)) {			
+				String messageText = message.getSender().concat(" - ").concat(message.getMessageBody().get(Const.BODY)).replace("\\n", "").replace("\n", "");
 
+				System.out.println(messageText);
+				listaListChatow.get("Wszyscy").add(messageText);	
 
-        public void run() {
-            while (!running)
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e1) {
-                    System.out.println("Listenning thread could not be started - running not set");
-                    e1.printStackTrace();
-                }
-            System.out.println("Listenning thread - Start signal received");
+				if (chatController != null) {
+					chatController.textChat.setItems(FXCollections.observableArrayList(listaListChatow.get("Wszyscy")));				
+				}
+			}
+		}
+		
+		private void ListaUzytkownikow(Message message) {
+			if (message.getMessageBody().size()>0) {	
+				if (chatController != null) {
+					chatController.userList.getItems().clear();
+					Map<String, String> sortedUsers = new TreeMap<String, String>(message.getMessageBody());
 
-            while (running) {
-                try {
-                    if (inBuff.ready()) {
-                        String serializedMessage = inBuff.readLine();
-                        System.out.println(serializedMessage);
-                        Message message = Serialization.DeSerializeMessage(serializedMessage);
-
-                        if (message.getType().equals(Const.MSG_LOGOWANIE_OK)) {
-                            this.LogowanieOK(message);
-                        }
-
-                        if (message.getType().equals(Const.MSG_DO_UZYTKOWNIKA)) {
-                            this.MessageDoWszystkich(message);
-                        }
-
-                        if (message.getType().equals(Const.MSG_DO_WSZYSTKICH)) {
-                            this.MessageDoWszystkich(message);
-                        }
-
-                        if (message.getType().equals(Const.MSG_LOGOWANIE_BLAD)) {
-                            Alert alert = new Alert(AlertType.ERROR);
-                            alert.setTitle("B��d");
-                            alert.setContentText("U�ytkownik o tej nazwie ju� istnieje lub przekroczono dozwolon� liczb� u�ytkownik�w.");
-                            alert.showAndWait();
-                        }
-
-                        if (message.getType().equals(Const.MSG_LISTA_UZ)) {
-                            this.ListaUzytkownikow(message);
-                        }
-                    }
-
-                } catch (IOException e) {
-                    System.err.println("Connection problem");
-                }
-            }
-
-            System.out.println("Listenning thread stopped");
-        }
-
-        private void LogowanieOK(Message message) {
-
-            System.out.println(message.toString());
-            ChatWindowController.loggedUserName=message.getReceiver();
-            String messageText = "Zalogowano na serwerze: " + ChatWindowController.loggedUserName;
-            listOfCom.add(messageText);
-
-            if (chatController != null) {
-                chatController.textChat.setItems(FXCollections.observableArrayList(listOfCom));
-            }
-        }
-
-        private void MessageDoWszystkich(Message message) {
-            if (message.getMessageBody().containsKey(Const.BODY)) {
-                String messageText = message.getSender().concat(" - ").concat(message.getMessageBody().get(Const.BODY)).replace("\\n", "").replace("\n", "");
-
-                System.out.println(messageText);
-                listOfCom.add(messageText);
-
-                if (chatController != null) {
-                    chatController.textChat.setItems(FXCollections.observableArrayList(listOfCom));
-                }
-            }
-        }
-
-        private void ListaUzytkownikow(Message message) {
-            if (message.getMessageBody().size()>0) {
-                if (chatController != null) {
-                    chatController.userList.getItems().clear();
-                    Map<String, String> sortedUsers = new TreeMap<String, String>(message.getMessageBody());
-
-                    for(String key : sortedUsers.keySet()){
-                        String userName = sortedUsers.get(key);
-
-                        chatController.userList.getItems().add(userName);
-                    }
-                }
-            }
-        }
-    }
+					for(String key : sortedUsers.keySet()){				    
+						String userName = sortedUsers.get(key);					
+						chatController.userList.getItems().add(userName);	
+					}		
+				}
+			}
+		}
+	}
 }
