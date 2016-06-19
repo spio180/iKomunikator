@@ -56,7 +56,7 @@ public class Transmitter {
         DataOutputStream outToClient = null;
         Connection outgoingConnection = mServer.getUser(receiver).getConnection();
 
-        System.out.println("Message from user: " + message.getSender() + " Msg to user: " + receiver +" body: "+ message + " Socket: " + outgoingConnection.getClientSocket().getRemoteSocketAddress());
+        System.out.println("Sent Message from user: " + message.getSender() + " Msg to user: " + receiver +" body: "+ message + " Socket: " + outgoingConnection.getClientSocket().getRemoteSocketAddress());
         outToClient = new DataOutputStream(outgoingConnection.getClientSocket().getOutputStream());
         outToClient.writeBytes(Serialization.SerializeMessage(message));
     }

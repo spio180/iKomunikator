@@ -42,27 +42,54 @@ public class Connection implements Runnable {
                         Message response = new Message(Const.MSG_LOGOWANIE_OK, Const.USER_SERVER, message.getSender(), bodyMessage);
                         mTransmitter.sendBack(response);
 
-                        HashMap<String,String> bodyMsg = new HashMap<String,String>();
-                        bodyMsg.put(Const.BODY,"Zalogowano użytkownika: " + message.getSender());
-                        Message notify = new Message(Const.MSG_DO_WSZYSTKICH,Const.USER_SERVER,Const.USER_ALL,bodyMsg);
+                        HashMap<String, String> bodyMsg = new HashMap<String, String>();
+                        bodyMsg.put(Const.BODY, "Zalogowano użytkownika: " + message.getSender());
+                        Message notify = new Message(Const.MSG_DO_WSZYSTKICH, Const.USER_SERVER, Const.USER_ALL, bodyMsg);
                         mTransmitter.sendToAllOthers(notify);
 
                         HashMap<String, String> userListMessage = new HashMap<String, String>();
-                        for(String nick : mServer.getUsers()) {
-                            userListMessage.put(nick,nick);
+                        for (String nick : mServer.getUsers()) {
+                            userListMessage.put(nick, nick);
                         }
                         Message userList = new Message(Const.MSG_LISTA_UZ, Const.USER_SERVER, Const.USER_ALL, userListMessage);
                         mTransmitter.sendToAll(userList);
+
+                        HashMap<String, String> wordList = new HashMap<String, String>();
+
+                        //TODO: Lista ma byc czytana z konfiguracji
+                        wordList.put("DUPA", "DUPA");
+                        wordList.put("KUWA", "KUWA");
+                        Message forbidenWordsList = new Message(Const.MSG_LISTA_WYRAZEN_ZABRONIONYCH, Const.USER_SERVER,
+                                message.getSender(), wordList);
+                        mTransmitter.sendToAll(forbidenWordsList);
+
                     } else if (Const.MSG_DO_WSZYSTKICH.equals(message.getType())) {
                         HashMap<String, String> bodyMessage = new HashMap<String, String>();
                         bodyMessage.put(Const.BODY, message.getMessageBody().get(Const.BODY));
-                        Message response = new Message(Const.MSG_DO_WSZYSTKICH, message.getSender(), Const.USER_ALL , bodyMessage);
+                        Message response = new Message(Const.MSG_DO_WSZYSTKICH, message.getSender(), Const.USER_ALL, bodyMessage);
                         mTransmitter.sendToAllOthers(response);
                     } else if (Const.MSG_DO_UZYTKOWNIKA.equals(message.getType())) {
                         HashMap<String, String> bodyMessage = new HashMap<String, String>();
                         bodyMessage.put(Const.BODY, message.getMessageBody().get(Const.BODY));
-                        Message response = new Message(Const.MSG_DO_WSZYSTKICH, message.getSender(), Const.USER_ALL , bodyMessage);
-                        mTransmitter.sendTo(message.getReceiver(),response);
+                        Message response = new Message(Const.MSG_DO_UZYTKOWNIKA, message.getSender(), message.getReceiver(), bodyMessage);
+                        mTransmitter.sendTo(message.getReceiver(), response);
+                    } else if (Const.MSG_WYLOGOWANIE.equals(message.getType())) {
+                        //TODO: Verify and remove connection - stop thread?
+                        String userLogout =  message.getSender();
+                        System.out.println("User logout: " + userLogout);
+
+                        mServer.getUsers().remove(userLogout);
+
+                        if (!mServer.getUsers().isEmpty()) {
+
+                            HashMap<String, String> userListMessage = new HashMap<String, String>();
+                            for (String nick : mServer.getUsers()) {
+                                userListMessage.put(nick, nick);
+                            }
+                            Message userList = new Message(Const.MSG_LISTA_UZ, Const.USER_SERVER, Const.USER_ALL, userListMessage);
+                            mTransmitter.sendToAllOthers(userList);
+                        }
+
                     } else {
                         HashMap<String, String> bodyMessage = new HashMap<String, String>();
                         bodyMessage.put("response", "Błędny komunikat.");

@@ -71,7 +71,7 @@ public class ServerConfigurationWindow {
 		if (Integer.parseInt(textPort.getText()) > 65535 || Integer.parseInt(textPort.getText()) < 1) {
 			JOptionPane.showMessageDialog(null, "Wpisz poprawny port w zakresie 1-65535");
 		} else if (Integer.parseInt(textLimit.getText()) > 999 || Integer.parseInt(textLimit.getText()) < 1) {
-			JOptionPane.showMessageDialog(null, "Wpisz poprawny limit po³¹czeñ w zakresie 1-999");
+			JOptionPane.showMessageDialog(null, "Wpisz poprawny limit poï¿½ï¿½czeï¿½ w zakresie 1-999");
 		}
 	}
 
@@ -82,12 +82,12 @@ public class ServerConfigurationWindow {
 		XmlWriter writer = new XmlWriter(ip, port, limit, fWordsArray);
 		try {
 			writer.serializeServerConfig();
-			JOptionPane.showMessageDialog(null, "Konfiguracjê poprawnie zapisano do pliku server.cfg");
+			JOptionPane.showMessageDialog(null, "Konfiguracjï¿½ poprawnie zapisano do pliku server.cfg");
 		} catch (Exception e) {
 			System.out.printf("Error saving the config file\n");
-			if (Main.debug == true) {
-				e.printStackTrace();
-			}
+			//if (Main.debug == true) {
+			//	e.printStackTrace();
+			//}
 		}
 	}
 	
@@ -137,7 +137,7 @@ public class ServerConfigurationWindow {
 
 //		fWords.addElement("ktury");
 
-		JList<String> list = new JList<String>();
+		final JList<String> list = new JList<String>();
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {

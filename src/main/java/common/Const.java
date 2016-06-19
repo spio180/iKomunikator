@@ -8,10 +8,13 @@ public class Const {
     public static String MSG_DO_WSZYSTKICH = "SEND_MSG_ALL";
     public static String MSG_DO_UZYTKOWNIKA = "SEND_MSG_USER";
     public static String MSG_LISTA_UZ = "USERS_LIST";
+    public static String MSG_LISTA_WYRAZEN_ZABRONIONYCH = "FORBIDDEN_EXPRESSIONS";
     public static String USER_SERVER = "####";
     public static String USER_ALL = "****";
     public static String LOGIN = "LOGIN";
     public static String LOGOUT = "LOGOUT";
     public static String BODY = "MESSAGE_BODY";
     public static String USER = "USER";
+    public static String ERROR_HEADER = "Błąd !";
+    public static String INFO_HEADER = "Komunikat";
 }
