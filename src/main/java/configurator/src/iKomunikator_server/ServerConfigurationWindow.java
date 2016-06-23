@@ -81,7 +81,7 @@ public class ServerConfigurationWindow {
 		XmlWriter writer = new XmlWriter(ip, port, limit, fWordsArray);
 		try {
 			writer.serializeServerConfig();
-			JOptionPane.showMessageDialog(null, "Konfiguracjďż˝ poprawnie zapisano do pliku server.cfg");
+			JOptionPane.showMessageDialog(null, "Konfigurację poprawnie zapisano do pliku server.cfg");
 		} catch (Exception e) {
 			System.out.printf("Error saving the config file\n");
 			//if (Main.debug == true) {
