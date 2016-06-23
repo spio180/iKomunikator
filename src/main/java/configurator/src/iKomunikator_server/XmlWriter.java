@@ -1,8 +1,7 @@
 package iKomunikator_server;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
