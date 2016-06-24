@@ -66,12 +66,89 @@ public class ServerConfigurationWindow {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void validate() {
+	/*
+	private boolean validate() {
+		boolean result = true;
+		
+		
 		if (Integer.parseInt(textPort.getText()) > 65535 || Integer.parseInt(textPort.getText()) < 1) {
 			JOptionPane.showMessageDialog(null, "Wpisz poprawny port w zakresie 1-65535");
 		} else if (Integer.parseInt(textLimit.getText()) > 999 || Integer.parseInt(textLimit.getText()) < 1) {
 			JOptionPane.showMessageDialog(null, "Wpisz poprawny limit poÅ‚Ä…czeÅ„ w zakresie 1-999");
 		}
+	}
+	*/
+	private boolean validate() {
+		boolean result = true;
+		String validIpMask = "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+
+		if (result && this.textIp.getLength()==0) {
+			result = false;
+			JOptionPane.showMessageDialog(null, "Podaj Adres IP!");
+			this.textIp.requestFocus();
+		}
+
+		if (result && !this.textIp.getText().matches(validIpMask)) {
+			result = false;
+			JOptionPane.showMessageDialog(null, "Poprawny adres to: [0-255].[0-255].[0-255].[0-255] !");
+			this.textIp.requestFocus();
+		}
+
+		if (result && this.textPort.getLength()==0) {
+			result = false;
+			JOptionPane.showMessageDialog(null, "Podaj numer portu serwera [0-65535] !");
+			this.textPort.requestFocus();
+		}
+
+		if (result && !this.textPort.getText().matches("[0-9]+")) {
+			result = false;
+			JOptionPane.showMessageDialog(null, "Niepoprawny numer portu !\nWpisz wartoœæ z przedzia³u 0-65535 !");
+			this.textPort.requestFocus();
+		}
+		
+		if (result && this.textPort.getLength()==0) {
+			result = false;
+			JOptionPane.showMessageDialog(null, "Niepoprawny numer portu !\nWpisz wartoœæ z przedzia³u 0-65535 !");
+			this.textPort.requestFocus();
+		}
+
+		if (result && this.textPort.getLength()>5) {
+			result = false;
+			JOptionPane.showMessageDialog(null, "Niepoprawny numer portu !\nWpisz wartoœæ z przedzia³u 0-65535 !");
+			this.textPort.requestFocus();
+		}
+
+		if (result && (Integer.parseInt(this.textPort.getText())<0 || Integer.parseInt(this.textPort.getText())>65535)) {
+			result = false;
+			JOptionPane.showMessageDialog(null, "Niepoprawny numer portu !\nWpisz wartoœæ z przedzia³u 0-65535 !");
+			this.textPort.requestFocus();
+		}
+		
+		if (result && this.textLimit.getLength()==0) {
+			result = false;
+			JOptionPane.showMessageDialog(null, "Niepoprawny limit po³¹czeñ !\nWpisz wartoœæ z przedzia³u 0-999 !");
+			this.textLimit.requestFocus();
+		}
+
+		if (result && !this.textLimit.getText().matches("[0-9]+")) {
+			result = false;
+			JOptionPane.showMessageDialog(null, "Niepoprawny limit po³¹czeñ !\nWpisz wartoœæ z przedzia³u 0-999 !");
+			this.textLimit.requestFocus();
+		}
+
+		if (result && this.textLimit.getLength()>3) {
+			result = false;
+			JOptionPane.showMessageDialog(null, "Niepoprawny limit po³¹czeñ !\nWpisz wartoœæ z przedzia³u 0-999 !");
+			this.textLimit.requestFocus();
+		}
+
+		if (result && (Integer.parseInt(this.textLimit.getText())<0 || Integer.parseInt(this.textLimit.getText())>999)) {
+			result = false;
+			JOptionPane.showMessageDialog(null, "Niepoprawny limit po³¹czeñ !\nWpisz wartoœæ z przedzia³u 0-999 !");
+			this.textLimit.requestFocus();
+		}
+
+		return result;
 	}
 
 	private void saveToXml() {
@@ -200,8 +277,9 @@ public class ServerConfigurationWindow {
 		btnZapisz.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				jListToArray();
-				validate();
-				saveToXml();
+				if (validate()) {
+					saveToXml();
+				}
 			}
 		});
 
