@@ -132,19 +132,19 @@ public class ServerConfigurationWindow {
 
 		if (result && !this.textLimit.getText().matches("[0-9]+")) {
 			result = false;
-			JOptionPane.showMessageDialog(null, "Niepoprawny limit połączeń !\nWpisz warto�� z przedzia�u 0-999 !");
+			JOptionPane.showMessageDialog(null, "Niepoprawny limit połączeń !\nWpisz wartość z przedziału 0-999 !");
 			this.textLimit.requestFocus();
 		}
 
 		if (result && this.textLimit.getText().length()>3) {
 			result = false;
-			JOptionPane.showMessageDialog(null, "Niepoprawny limit połączeń !\nWpisz warto�� z przedzia�u 0-999 !");
+			JOptionPane.showMessageDialog(null, "Niepoprawny limit połączeń !\nWpisz wartość z przedziału 0-999 !");
 			this.textLimit.requestFocus();
 		}
 
 		if (result && (Integer.parseInt(this.textLimit.getText())<0 || Integer.parseInt(this.textLimit.getText())>999)) {
 			result = false;
-			JOptionPane.showMessageDialog(null, "Niepoprawny limit połączeń !\nWpisz warto�� z przedzia�u 0-999 !");
+			JOptionPane.showMessageDialog(null, "Niepoprawny limit połączeń !\nWpisz wartość z przedziału 0-999 !");
 			this.textLimit.requestFocus();
 		}
 
