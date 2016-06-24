@@ -82,7 +82,7 @@ public class ServerConfigurationWindow {
 		boolean result = true;
 		String validIpMask = "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
 
-		if (result && this.textIp.getLength()==0) {
+		if (result && this.textIp.getText().length()==0) {
 			result = false;
 			JOptionPane.showMessageDialog(null, "Podaj Adres IP!");
 			this.textIp.requestFocus();
@@ -94,7 +94,7 @@ public class ServerConfigurationWindow {
 			this.textIp.requestFocus();
 		}
 
-		if (result && this.textPort.getLength()==0) {
+		if (result && this.textPort.getText().length()==0) {
 			result = false;
 			JOptionPane.showMessageDialog(null, "Podaj numer portu serwera [0-65535] !");
 			this.textPort.requestFocus();
@@ -102,49 +102,49 @@ public class ServerConfigurationWindow {
 
 		if (result && !this.textPort.getText().matches("[0-9]+")) {
 			result = false;
-			JOptionPane.showMessageDialog(null, "Niepoprawny numer portu !\nWpisz wartoœæ z przedzia³u 0-65535 !");
+			JOptionPane.showMessageDialog(null, "Niepoprawny numer portu !\nWpisz wartoï¿½ï¿½ z przedziaï¿½u 0-65535 !");
 			this.textPort.requestFocus();
 		}
 		
-		if (result && this.textPort.getLength()==0) {
+		if (result && this.textPort.getText().length()==0) {
 			result = false;
-			JOptionPane.showMessageDialog(null, "Niepoprawny numer portu !\nWpisz wartoœæ z przedzia³u 0-65535 !");
+			JOptionPane.showMessageDialog(null, "Niepoprawny numer portu !\nWpisz wartoï¿½ï¿½ z przedziaï¿½u 0-65535 !");
 			this.textPort.requestFocus();
 		}
 
-		if (result && this.textPort.getLength()>5) {
+		if (result && this.textPort.getText().length()>5) {
 			result = false;
-			JOptionPane.showMessageDialog(null, "Niepoprawny numer portu !\nWpisz wartoœæ z przedzia³u 0-65535 !");
+			JOptionPane.showMessageDialog(null, "Niepoprawny numer portu !\nWpisz wartoï¿½ï¿½ z przedziaï¿½u 0-65535 !");
 			this.textPort.requestFocus();
 		}
 
 		if (result && (Integer.parseInt(this.textPort.getText())<0 || Integer.parseInt(this.textPort.getText())>65535)) {
 			result = false;
-			JOptionPane.showMessageDialog(null, "Niepoprawny numer portu !\nWpisz wartoœæ z przedzia³u 0-65535 !");
+			JOptionPane.showMessageDialog(null, "Niepoprawny numer portu !\nWpisz wartoï¿½ï¿½ z przedziaï¿½u 0-65535 !");
 			this.textPort.requestFocus();
 		}
 		
-		if (result && this.textLimit.getLength()==0) {
+		if (result && this.textLimit.getText().length()==0) {
 			result = false;
-			JOptionPane.showMessageDialog(null, "Niepoprawny limit po³¹czeñ !\nWpisz wartoœæ z przedzia³u 0-999 !");
+			JOptionPane.showMessageDialog(null, "Niepoprawny limit poï¿½ï¿½czeï¿½ !\nWpisz wartoï¿½ï¿½ z przedziaï¿½u 0-999 !");
 			this.textLimit.requestFocus();
 		}
 
 		if (result && !this.textLimit.getText().matches("[0-9]+")) {
 			result = false;
-			JOptionPane.showMessageDialog(null, "Niepoprawny limit po³¹czeñ !\nWpisz wartoœæ z przedzia³u 0-999 !");
+			JOptionPane.showMessageDialog(null, "Niepoprawny limit poï¿½ï¿½czeï¿½ !\nWpisz wartoï¿½ï¿½ z przedziaï¿½u 0-999 !");
 			this.textLimit.requestFocus();
 		}
 
-		if (result && this.textLimit.getLength()>3) {
+		if (result && this.textLimit.getText().length()>3) {
 			result = false;
-			JOptionPane.showMessageDialog(null, "Niepoprawny limit po³¹czeñ !\nWpisz wartoœæ z przedzia³u 0-999 !");
+			JOptionPane.showMessageDialog(null, "Niepoprawny limit poï¿½ï¿½czeï¿½ !\nWpisz wartoï¿½ï¿½ z przedziaï¿½u 0-999 !");
 			this.textLimit.requestFocus();
 		}
 
 		if (result && (Integer.parseInt(this.textLimit.getText())<0 || Integer.parseInt(this.textLimit.getText())>999)) {
 			result = false;
-			JOptionPane.showMessageDialog(null, "Niepoprawny limit po³¹czeñ !\nWpisz wartoœæ z przedzia³u 0-999 !");
+			JOptionPane.showMessageDialog(null, "Niepoprawny limit poï¿½ï¿½czeï¿½ !\nWpisz wartoï¿½ï¿½ z przedziaï¿½u 0-999 !");
 			this.textLimit.requestFocus();
 		}
 
@@ -176,9 +176,9 @@ public class ServerConfigurationWindow {
 
 	private void initialize() {
 		frmIkonfigurator = new JFrame();
-		frmIkonfigurator.setTitle("Konfigurator serwera iKomunikator");
 		frmIkonfigurator.setResizable(false);
-		frmIkonfigurator.setBounds(100, 100, 900, 600);
+		frmIkonfigurator.setTitle("Konfigurator serwera iKomunikator");
+		frmIkonfigurator.setBounds(100, 100, 800, 600);
 		frmIkonfigurator.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmIkonfigurator.getContentPane().setLayout(null);
 
@@ -187,28 +187,28 @@ public class ServerConfigurationWindow {
 		frmIkonfigurator.getContentPane().add(lblIp);
 
 		JLabel lblPort = new JLabel("Port");
-		lblPort.setBounds(283, 11, 110, 30);
+		lblPort.setBounds(218, 11, 110, 30);
 		frmIkonfigurator.getContentPane().add(lblPort);
 
 		JLabel lblLimit = new JLabel("Limit PoÅ‚Ä…czeÅ„");
-		lblLimit.setBounds(549, 11, 110, 30);
+		lblLimit.setBounds(393, 11, 110, 30);
 		frmIkonfigurator.getContentPane().add(lblLimit);
 
 		textIp = new JTextField();
 		textIp.setText(ip);
-		textIp.setBounds(111, 16, 114, 20);
+		textIp.setBounds(62, 16, 114, 20);
 		frmIkonfigurator.getContentPane().add(textIp);
 		textIp.setColumns(10);
 
 		textPort = new JTextField();
 		textPort.setText(port);
-		textPort.setBounds(354, 16, 114, 20);
+		textPort.setBounds(246, 16, 114, 20);
 		frmIkonfigurator.getContentPane().add(textPort);
 		textPort.setColumns(10);
 
 		textLimit = new JTextField();
 		textLimit.setText(limit);
-		textLimit.setBounds(671, 16, 114, 20);
+		textLimit.setBounds(481, 16, 114, 20);
 		frmIkonfigurator.getContentPane().add(textLimit);
 		textLimit.setColumns(10);
 
@@ -223,7 +223,7 @@ public class ServerConfigurationWindow {
 			}
 		});
 		list.setModel(fWords);
-		list.setBounds(10, 73, 874, 454);
+		list.setBounds(10, 73, 764, 423);
 		frmIkonfigurator.getContentPane().add(list);
 
 		JButton btnZmien = new JButton("ZmieÅ„");
@@ -241,7 +241,7 @@ public class ServerConfigurationWindow {
 
 			}
 		});
-		btnZmien.setBounds(437, 538, 89, 23);
+		btnZmien.setBounds(178, 538, 89, 23);
 		frmIkonfigurator.getContentPane().add(btnZmien);
 
 		JButton btnUsun = new JButton("UsuÅ„");
@@ -252,7 +252,7 @@ public class ServerConfigurationWindow {
 				textNewWord.setText("");
 			}
 		});
-		btnUsun.setBounds(536, 538, 89, 23);
+		btnUsun.setBounds(277, 538, 89, 23);
 		frmIkonfigurator.getContentPane().add(btnUsun);
 
 		JButton btnDodaj = new JButton("Dodaj");
@@ -270,7 +270,7 @@ public class ServerConfigurationWindow {
 			}
 		});
 
-		btnDodaj.setBounds(338, 538, 89, 23);
+		btnDodaj.setBounds(79, 538, 89, 23);
 		frmIkonfigurator.getContentPane().add(btnDodaj);
 
 		JButton btnZapisz = new JButton("Zapisz");
@@ -283,7 +283,7 @@ public class ServerConfigurationWindow {
 			}
 		});
 
-		btnZapisz.setBounds(696, 538, 89, 23);
+		btnZapisz.setBounds(586, 538, 89, 23);
 		frmIkonfigurator.getContentPane().add(btnZapisz);
 
 		JButton btnAnuluj = new JButton("Zamknij");
@@ -292,11 +292,11 @@ public class ServerConfigurationWindow {
 				frmIkonfigurator.dispose();
 			}
 		});
-		btnAnuluj.setBounds(795, 538, 89, 23);
+		btnAnuluj.setBounds(685, 538, 89, 23);
 		frmIkonfigurator.getContentPane().add(btnAnuluj);
 
 		textNewWord = new JTextField();
-		textNewWord.setBounds(79, 539, 237, 20);
+		textNewWord.setBounds(79, 507, 287, 20);
 		frmIkonfigurator.getContentPane().add(textNewWord);
 		textNewWord.setColumns(10);
 		
@@ -307,7 +307,7 @@ public class ServerConfigurationWindow {
 		
 		JLabel lblWyraenie = new JLabel("WyraÅ¼enie:");
 		lblWyraenie.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblWyraenie.setBounds(10, 541, 77, 14);
+		lblWyraenie.setBounds(10, 509, 77, 14);
 		frmIkonfigurator.getContentPane().add(lblWyraenie);
 	}
 }
